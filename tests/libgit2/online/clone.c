@@ -36,6 +36,8 @@ static char *_remote_proxy_selfsigned = NULL;
 static char *_remote_expectcontinue = NULL;
 static char *_remote_redirect_initial = NULL;
 static char *_remote_redirect_subsequent = NULL;
+static char *_remote_redirect_authentication = NULL;
+static char *_remote_redirect_target = NULL;
 static char *_remote_speed_timesout = NULL;
 static char *_remote_speed_slow = NULL;
 
@@ -93,6 +95,8 @@ void test_online_clone__initialize(void)
 	_remote_expectcontinue = cl_getenv("GITTEST_REMOTE_EXPECTCONTINUE");
 	_remote_redirect_initial = cl_getenv("GITTEST_REMOTE_REDIRECT_INITIAL");
 	_remote_redirect_subsequent = cl_getenv("GITTEST_REMOTE_REDIRECT_SUBSEQUENT");
+	_remote_redirect_authentication = cl_getenv("GITTEST_REMOTE_REDIRECT_AUTHENTICATION");
+	_remote_redirect_target = cl_getenv("GITTEST_REMOTE_REDIRECT_TARGET");
 	_remote_speed_timesout = cl_getenv("GITTEST_REMOTE_SPEED_TIMESOUT");
 	_remote_speed_slow = cl_getenv("GITTEST_REMOTE_SPEED_SLOW");
 
@@ -158,6 +162,8 @@ void test_online_clone__cleanup(void)
 	git__free(_remote_expectcontinue);
 	git__free(_remote_redirect_initial);
 	git__free(_remote_redirect_subsequent);
+	git__free(_remote_redirect_authentication);
+	git__free(_remote_redirect_target);
 	git__free(_remote_speed_timesout);
 	git__free(_remote_speed_slow);
 
@@ -1436,5 +1442,43 @@ void test_online_clone__timeout_configurable_succeeds_slowly(void)
 	cl_git_pass(git_libgit2_opts(GIT_OPT_SET_SERVER_TIMEOUT, 1000));
 
 	cl_git_pass(git_clone(&g_repo, _remote_speed_slow, "./slow-but-successful", NULL));
+#endif
+}
+
+#ifndef GIT_HTTPS_WINHTTP
+static int ensure_correct_host(
+	git_credential **cred,
+	const char *url,
+	const char *user,
+	unsigned int allowed_types,
+	void *data)
+{
+	char **given_url = (char **)data;
+
+	GIT_UNUSED(cred);
+	GIT_UNUSED(user);
+	GIT_UNUSED(allowed_types);
+
+	*given_url = git__strdup(url);
+	return given_url ? GIT_PASSTHROUGH : -1;
+}
+#endif
+
+void test_online_clone__redirect_authentication_is_current_host(void)
+{
+#ifndef GIT_HTTPS_WINHTTP
+	char *given_url;
+
+	if (!_remote_redirect_authentication || !_remote_redirect_target)
+		cl_skip();
+
+	g_options.fetch_opts.callbacks.credentials = ensure_correct_host;
+	g_options.fetch_opts.callbacks.payload = &given_url;
+
+	cl_git_fail_with(GIT_EAUTH, git_clone(&g_repo, _remote_redirect_authentication, "./redirect_authentication", &g_options));
+
+	cl_assert_equal_s(_remote_redirect_target, given_url);
+
+	git__free(given_url);
 #endif
 }
