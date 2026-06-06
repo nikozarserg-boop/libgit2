@@ -378,7 +378,8 @@ cleanup:
 		git_blame__entry *e = ent->next;
 		git_blame_hunk *h = hunk_from_entry(ent, blame);
 
-		git_vector_insert(&blame->hunks, h);
+		if (h)
+			git_vector_insert(&blame->hunks, h);
 
 		git_blame__free_entry(ent);
 		ent = e;
@@ -444,7 +445,7 @@ static int buffer_hunk_cb(
 
 	GIT_UNUSED(delta);
 
-	wedge_line = (hunk->new_start >= hunk->old_start || hunk->old_lines==0) ? hunk->new_start : hunk->old_start; 
+	wedge_line = (hunk->new_start >= hunk->old_start || hunk->old_lines==0) ? hunk->new_start : hunk->old_start;
 	blame->current_diff_line = wedge_line;
 	blame->current_hunk = (git_blame_hunk*)git_blame_get_hunk_byline(blame, wedge_line);
 	if (!blame->current_hunk) {
@@ -504,7 +505,7 @@ static int buffer_line_cb(
 			if (!git_vector_search2(&i, &blame->hunks, ptrs_equal_cmp, blame->current_hunk)) {
 				git_vector_remove(&blame->hunks, i);
 				free_hunk(blame->current_hunk);
-				i_next = min( i , blame->hunks.length -1); 
+				i_next = min( i , blame->hunks.length -1);
 				blame->current_hunk = (git_blame_hunk*)git_blame_get_hunk_byindex(blame, (uint32_t)i_next);
 			}
 		}
