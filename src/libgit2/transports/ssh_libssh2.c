@@ -446,7 +446,7 @@ static int load_known_hosts(LIBSSH2_KNOWNHOSTS **hosts, LIBSSH2_SESSION *session
 		goto out;
 	}
 
-        if ((error = git_str_joinpath(&path, git_str_cstr(&sshdir), KNOWN_HOSTS_FILE)) < 0)
+	if ((error = git_str_joinpath(&path, git_str_cstr(&sshdir), KNOWN_HOSTS_FILE)) < 0)
 		goto out;
 
 	if ((known_hosts = libssh2_knownhost_init(session)) == NULL) {
