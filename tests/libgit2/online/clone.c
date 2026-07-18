@@ -10,7 +10,7 @@
 #define LIVE_REPO_AS_DIR "http:/github.com/libgit2/TestGitRepository"
 #define LIVE_EMPTYREPO_URL "http://github.com/libgit2/TestEmptyRepository"
 #define BB_REPO_URL "https://libgit2-test@bitbucket.org/libgit2-test/testgitrepository.git"
-#define BB_REPO_URL_WITH_PASS "https://libgit2-test:YT77Ppm2nq8w4TYjGS8U@bitbucket.org/libgit2-test/testgitrepository.git"
+#define BB_REPO_URL_WITH_PASS "https://libgit2-test:ATATT3xFfGF0as31Ls7glHLXFnf-9PKaQwMsN6792h_uClrQtTe3K8D0NFq7zsmbgh470HRYTQu2XmdDjBbFFW2KqMwzW32wg6YQOTqoD4LY1TXL2OOeYC5MvG9NkGvDHbH3S2CgXS-iLBxFyay8cUkUxvoV_qB4ZXwtZZil5W2WR6AOCdNGZW0=7875E1FD@bitbucket.org/libgit2-test/testgitrepository.git"
 #define BB_REPO_URL_WITH_WRONG_PASS "https://libgit2-test:wrong@bitbucket.org/libgit2-test/testgitrepository.git"
 #define GOOGLESOURCE_REPO_URL "https://chromium.googlesource.com/external/github.com/sergi/go-diff"
 
@@ -485,7 +485,7 @@ void test_online_clone__credentials(void)
 
 void test_online_clone__credentials_via_custom_headers(void)
 {
-	const char *creds = "libgit2-test:YT77Ppm2nq8w4TYjGS8U";
+	const char *creds = "libgit2-test:ATATT3xFfGF0as31Ls7glHLXFnf-9PKaQwMsN6792h_uClrQtTe3K8D0NFq7zsmbgh470HRYTQu2XmdDjBbFFW2KqMwzW32wg6YQOTqoD4LY1TXL2OOeYC5MvG9NkGvDHbH3S2CgXS-iLBxFyay8cUkUxvoV_qB4ZXwtZZil5W2WR6AOCdNGZW0=7875E1FD";
 	git_str auth = GIT_STR_INIT;
 
 	cl_git_pass(git_str_puts(&auth, "Authorization: Basic "));
@@ -501,7 +501,7 @@ void test_online_clone__credentials_via_custom_headers(void)
 void test_online_clone__bitbucket_style(void)
 {
 	git_credential_userpass_payload user_pass = {
-		"libgit2-test", "YT77Ppm2nq8w4TYjGS8U"
+		"libgit2-test", "ATATT3xFfGF0as31Ls7glHLXFnf-9PKaQwMsN6792h_uClrQtTe3K8D0NFq7zsmbgh470HRYTQu2XmdDjBbFFW2KqMwzW32wg6YQOTqoD4LY1TXL2OOeYC5MvG9NkGvDHbH3S2CgXS-iLBxFyay8cUkUxvoV_qB4ZXwtZZil5W2WR6AOCdNGZW0=7875E1FD"
 	};
 
 	g_options.fetch_opts.callbacks.credentials = git_credential_userpass;
